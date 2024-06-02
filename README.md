@@ -1,4 +1,4 @@
-# Installing Kong on Local Kubernetes Cluster
+# Install Kong on Kubernetes Cluster locally
 
 This guide will walk you through the steps to install Kong on a local Kubernetes cluster using the Helm chart.
 
@@ -17,9 +17,9 @@ To install Kong using Helm, you need to add the Kong Helm repository to your Hel
 helm repo add kong https://charts.konghq.com
 helm repo update
 
-Use helm list command to view the add repo.
+Use helm repo list command to view the added repo.
 
-helm list repo
+helm repo list
 
 And Helm Search to view the charts under kong repo.
 
@@ -29,30 +29,28 @@ There are two available charts.
 kong/ingress
 kong/kong
 
-## Step 2: Installing Kong from Helm chart.
+## Step 2: Installing Kong from Helm chart
 
-Before installing directly from the chart kong/kong. First export the default values.yaml to an file values-default.yaml using the helm command.
+Before installing directly from the chart kong/kong. First export the default chart to an file values-default.yaml.
 
 helm show values kong/kong > values-default.yaml
 
-This should create an file named values-default.yaml in the current directory.
+This should create an file named values-default.yaml in the current directory and export details.
 
-Then use helm install command to install Kong API gateway with kong as an release name and delpoy in namespace "kong" with the --file "values-default.yaml"
+Then use helm install command to install Kong API Gateway with kong as an release name and delpoy in namespace "kong" override with the --file "values-default.yaml"
 
 helm install kong -n kong kong/kong -f values-default.yaml
 
-Validate Pod is in ready state.
+Verify Pod should be in ready state.
 
 kubectl get all -n kong
 NAME                           READY   STATUS    RESTARTS     AGE
 pod/kong-kong-58bb4bdc-rmjwf   2/2     Running   1 (2s ago)   10s
 
-NAME                                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)
-           AGE
+NAME                                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                         AGE
 service/kong-kong-manager              NodePort       10.100.175.101   <none>        8002:32278/TCP,8445:32743/TCP   10s
 service/kong-kong-proxy                LoadBalancer   10.104.153.238   192.168.2.6   80:32293/TCP,443:31503/TCP      10s
-service/kong-kong-validation-webhook   ClusterIP      10.110.186.3     <none>        443/TCP
-           10s
+service/kong-kong-validation-webhook   ClusterIP      10.110.186.3     <none>        443/TCP                         10s
 
 NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/kong-kong   1/1     1            0           10s
@@ -60,7 +58,7 @@ deployment.apps/kong-kong   1/1     1            0           10s
 NAME                                 DESIRED   CURRENT   READY   AGE
 replicaset.apps/kong-kong-58bb4bdc   1         1         0       10s
 
-From the Configuration file you can Enable or Disable kong feature or plugin etc.
+From the Configuration file you can Enable or Disable Kong features or plugin etc.
 
 Example here we updated image to use "kong/kong-gateway" from "kong"
 
@@ -78,17 +76,17 @@ admin:
   type: LoadBalancer
   loadBalancerClass:
 
-Once modidied the changes run the Helm Upgrade command.
+Once modified the changes in the custom file run the Helm Upgrade command.
 
 helm upgrade kong -n kong kong/kong -f values-default.yaml
 
-Helm list the command used to view the revision status.
+Helm list command used to view the revision status.
 
 helm list -n kong
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
 kong    kong            7               2024-06-01 22:43:28.998620176 +0530 IST deployed        kong-2.38.0     3.6
 
-## Step 3: Deploy few applications with kong ingress. Sample apps you can find "dummy_app" folder.
+## Step 3: Deploy few sample applications with kong ingress. You can find the application code under "dummy_app" folder.
 
 kubectl apply -f bar.yaml
 kubectl apply -f bar-ingress.yaml
@@ -101,8 +99,10 @@ kubectl apply -f echo-ingress.yaml
 
 ## Step 4: Test accessing the application using the Kong API address
 
-http://{Kong API server IP_address}/path # Path based Ingress
-http://192.168.99.100/bar
-http://192.168.99.100/foo
+http://{Kong Proxy IP}/path # Path based Ingress
+http://<Kong Proxy IP>/bar
+http://<Kong Proxy IP>/foo
 
-http://{Echo App Ingress Host Name} # Host based Ingress
+http://{Echo App Ingress HostName} # Host based Ingress
+
+![image](https://github.com/sunilc18/Kong-Kubernetes/assets/40242624/330234eb-5d24-4e53-802a-af6582a07b6c)
