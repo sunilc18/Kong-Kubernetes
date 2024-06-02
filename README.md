@@ -9,11 +9,11 @@ Before you begin, make sure you have the following prerequisites installed:
 - Kubernetes cluster (e.g., Minikube, Docker Desktop with Kubernetes enabled)
 - Helm (v3 or later)
 
-## Step 1: Add Kong Helm repository
+### Step 1: Add Kong Helm repository
 
 To install Kong using Helm, you need to add the Kong Helm repository to your Helm configuration. Run the following command:
 
-```Add the repo on your machine:
+Add the repo on your machine:
 helm repo add kong https://charts.konghq.com
 helm repo update
 
@@ -29,7 +29,7 @@ There are two available charts.
 kong/ingress
 kong/kong
 
-## Step 2: Installing Kong from Helm chart
+### Step 2: Installing Kong from Helm chart
 
 Before installing directly from the chart kong/kong. First export the default chart to an file values-default.yaml.
 
@@ -41,7 +41,7 @@ Then use helm install command to install Kong API Gateway with kong as an releas
 
 helm install kong -n kong kong/kong -f values-default.yaml
 
-Verify Pod should be in ready state.
+### Verify Pod should be in ready state.
 
 kubectl get all -n kong
 NAME                           READY   STATUS    RESTARTS     AGE
@@ -63,17 +63,14 @@ From the Configuration file you can Enable or Disable Kong features or plugin et
 Example here we updated image to use "kong/kong-gateway" from "kong"
 
 image:
-  repository: kong/kong-gateway
+  repository: **kong/kong-gateway**
   tag: "3.6"
 
 And modified admin service from NodePort to LoadBalancer type in the configuartion and also you can disable if don't want to expose the admin API.
 
 admin:
-  # Enable creating a Kubernetes service for the admin API
-  # Disabling this is recommended for most ingress controller configurations
-  # Enterprise users that wish to use Kong Manager with the controller should enable this
   enabled: true  
-  type: LoadBalancer
+  type: **LoadBalancer**
   loadBalancerClass:
 
 Once modified the changes in the custom file run the Helm Upgrade command.
@@ -86,7 +83,7 @@ helm list -n kong
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
 kong    kong            7               2024-06-01 22:43:28.998620176 +0530 IST deployed        kong-2.38.0     3.6
 
-## Step 3: Deploy few sample applications with kong ingress. You can find the application code under "dummy_app" folder.
+### Step 3: Deploy few sample applications with kong ingress. You can find the application code under "dummy_app" folder.
 
 kubectl apply -f bar.yaml
 kubectl apply -f bar-ingress.yaml
@@ -97,7 +94,7 @@ kubectl apply -f foo-ingress.yaml
 kubectl apply -f echo.yaml
 kubectl apply -f echo-ingress.yaml
 
-## Step 4: Test accessing the application using the Kong API address
+### Step 4: Test accessing the application using the Kong API address
 
 http://{Kong Proxy IP}/path # Path based Ingress
 http://<Kong Proxy IP>/bar
@@ -106,3 +103,5 @@ http://<Kong Proxy IP>/foo
 http://{Echo App Ingress HostName} # Host based Ingress
 
 ![image](https://github.com/sunilc18/Kong-Kubernetes/assets/40242624/330234eb-5d24-4e53-802a-af6582a07b6c)
+
+
